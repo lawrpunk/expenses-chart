@@ -41,25 +41,47 @@ fetch("data.json")
       }
     });
 
-    // Add event listeners for mouse hover effect
+    // Loop through chart items
     chartItems.forEach((item) => {
-      item.addEventListener("mouseenter", () => {
+      // Function to show the chart item
+      const showChartItem = () => {
+        // Find the corresponding chart item to show
         const target = document.querySelector(
           `.chart-item-show[data-for="${item.getAttribute("data-for")}"]`
         );
+
+        // Get the amount and calculate the percentage
         const amount = parseFloat(item.getAttribute("data-amount"));
         const percentage = ((amount - 3) / maxAmount) * 100;
+
+        // Set the position and content of the chart item
         target.style.bottom = `${percentage}%`;
         target.textContent = `$${amount}`;
         target.style.display = "block";
-      });
+      };
 
-      item.addEventListener("mouseleave", () => {
+      // Function to hide the chart item
+      const hideChartItem = () => {
+        // Find the corresponding chart item to hide
         const target = document.querySelector(
           `.chart-item-show[data-for="${item.getAttribute("data-for")}"]`
         );
+
+        // Hide the chart item
         target.style.display = "none";
+      };
+
+      // Mouse events
+      item.addEventListener("mouseenter", showChartItem); // Show chart item on mouse enter
+      item.addEventListener("mouseleave", hideChartItem); // Hide chart item on mouse leave
+
+      // Touch events
+      item.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // Prevent scrolling on touch devices
+        showChartItem(); // Show chart item on touch start
       });
+
+      item.addEventListener("touchend", hideChartItem); // Hide chart item on touch end
     });
   })
   .catch((error) => {
